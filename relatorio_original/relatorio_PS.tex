@@ -1,0 +1,104 @@
+\documentclass[G]{cpgf}
+
+%*********** Modelo de TESE / DISSERTA\c{C}\~AO / TCC *************************
+% ATEN\c{C}\~AO: N\~AO MOFICIAR A ESTRUTURA DESTE ARQUIVO.
+%
+% Os coment\'arios com uma s\'o porcentagem(%) s\~ao comando que podem  ser 
+% incluidos descomentando-os. Para n\~ao utilizar um comando/enviroment 
+% opcional basta coment\'a-los com uma porcentagem (%) simples.
+%
+% O Tipo de texto \'e escolhido mudando a op\c{c}\~ao de classe de documento no 
+% commando \documentclass acima: 
+%
+%       D - Tese de doutorado
+%       M - Disseta\c{c}\~ao de mestrado
+%       G - Trabalho de Conclus\~ao de Curso da Gradua\c{c}\~ao
+%
+%
+%   Atualizada em 19 de setembro de 2017
+%
+%*******************************************************************************
+
+%% Inclui arquivo com pacotes extras, macros e/ou novos comandos
+%\input{macro.tex}
+
+\begin{document}
+
+%%%%%%%%%% - INFORMAÇÕES - %%%%%%%%%%%%%%%%%%%%
+\title{Modelagem e Processamento Sísmico de Dado Sintético.}
+\author{MURILO SANTIAGO VALE RODRIGUES} % COLOQUE O SEU NOME EM CAIXA ALTA !!!!
+\date{2019}
+
+%% Comandos abaixo recebem 3 entadas: nome (incluindo t\'itulo), 
+%% afilia\c{c}\~ao e genero (H - homem; M- mulher)
+\advisor{Prof. Dr. João Carlos Ribeiro Cruz}{Universidade Federal do Pará}{H}
+%\coadvisor{}{}{H}
+
+
+%% Comandos abaixo recebem 2 entradas: nome (incluindo t\'itulo), 
+%% afilia\c{c}\~ao.
+%% Se o menbro 2 da banca for coorientador usar op\c{c}\~ao [co] 
+%\bancadois[co]{Prof. Dr. Alberto Santos Dummont}{Universidade Federal de Lugar 
+%Nenhum}
+% \bancadois{Prof. Dr. Daniel Leal Macedo}{Universidade Federal do Pará}
+% \bancatres{Dr. Wildney Wallacy da Silva Vieira}{Universidade Federal do Pará}
+% \bancaquatro{Profa. Dra. Ellen de Nazar\'e Souza Gomes Costa Corr\^ea Machado Alves Martins da Silva}{Universidade Federal do Rio Grande do Norte}
+% \bancacinco{Prof. Dr. S\'o Isso}{Universidade Federal do Pará}
+
+
+%% Colocar palavras chaves do trabalho
+% \chaves{Sísmica. Processamento. Imageamento. Difração. Exploração.}
+% \keys{Seismic. Processing. Imaging. difraction. Exploration.}
+
+%%%%%%%%%% - PARTES PRETEXTUAIS - %%%%%%%%%%%%%%%%%%%%
+
+\capa %% Obrigatorio
+\rosto  %% Obrigatorio
+
+%% Ficha catalogr\'afica. Comentar comando abaixo quando for imprimir, pois, a 
+%% ficha catalogr\'afica deve ser impressa no verso da folha de rosto. 
+%% Descomentar ao fazer a vers\~ao eletr\^onica do TCC. A ficha catalogr\'afica
+%% deve ser obtida previamente no formato pdf
+% \includepdf[pages=-,pagecommand={},width=\textwidth]{FICAT_MURILO.pdf} % FICHA CATALOGRAFICA
+% \includepdf[keepaspectratio]{aprovacao.pdf}
+
+% \aprovacao{17 de Dezembro de 2018} %%Obrigatorio
+
+%% Opcional
+% \dedicatoria{A gravidade explica os movimentos dos planetas, mas não pode explicar quem colocou os planetas em movimento. Deus governa todas as coisas e sabe tudo que é ou que pode ser feito. Isaac Newton}
+
+%% Agradecimentos (opcional), epigrafe (opcional), resumo (Obrigatorio), 
+%% abstract (Obrigatorio)
+\include{pretextuais} 
+
+%% Listas de figuras, de tabelas, de siglas, de simbolos: TODAS OPCIONAIS %%%
+% \listoffigures
+% \listoftables
+
+%% SUMARIO - OBRIGATORIO %%%
+\tableofcontents        
+
+
+
+%%%%%%%%%% - TEXTO - %%%%%%%%%%%%%%%%%%%%
+\include{Cap_1}
+\include{Cap_2}
+\include{Cap_3}
+\include{Cap_4}
+% \include{Cap_5}
+% \include{Cap_6}
+
+%%%%%%%%%% - BIBLIOGRAFIA - %%%%%%%%%%%%%%%%%%%%
+\bibliography{biblio}
+\bibliographystyle{cpgf_seg} 
+
+
+%%%%%%%%%% - APENDICES E ANEXOS - %%%%%%%%%%%%%%%%%%%%
+\apendices
+\include{Cap_7_apendice}
+
+%\anexos
+%\include{Cap_4_apendice}
+
+
+\end{document}

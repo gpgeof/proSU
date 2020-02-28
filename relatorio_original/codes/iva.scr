@@ -1,0 +1,6 @@
+#! /bin/sh
+# File: iva.scr
+#       Run this script to start script iva.sh
+
+xterm -geom 80x20+10+545 -e iva.sh
+
