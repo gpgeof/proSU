@@ -5,7 +5,11 @@
 
 ![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/relatorio_original/figuras/cap2/campovel_suavizado.png)
 
-Os scripts ... **TO DO**
+Este repositório é uma biblioteca de scripts para o pacote de processamento sísmico Seismic Unix (SU) em 
+linguagem Shell Script. Funciona como uma interface de linha de comandos para a utilização dos programas do pacote
+ de processamento, chamados dentro dos scripts.
+
+Este repositório possui, além da documentação, um [relatório](https://github.com/Dirack/proSU/blob/master/relatorio_original/relatorio_PS.pdf) detalhando as etapas do processamento sísmico desenvolvidas nos scripts, serrvindo de referência teórica. Ambos, scripts e relatório, podem ser utilizados como guias para um minicurso de introdução ao processamento sísmico.
 
 [Para mais informações visite o nosso wiki!](https://github.com/Dirack/ProcessamentoSismicoSU/wiki)
 
