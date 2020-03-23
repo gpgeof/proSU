@@ -155,7 +155,7 @@ EOF
 		ZEDGE="$4"
 		SFILL_PONTO=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f1)
 		SFILL_SLOOTH=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f2)
-		KEDGE=$(grep -n "kedge=" "$INTERFACES_FILENAME" | rev | cut -d"," -f1)
+		KEDGE=$(grep -n "[0-9] xedge=" "$INTERFACES_FILENAME" | wc -l)
 		NUM_PONTOS=$(echo "$XEDGE" | cut -d"=" -f2 | tr "," "\n" | wc -l)
 		SEDGE="sedge=0"
 		for i in $(seq $((NUM_PONTOS-1)))
@@ -256,7 +256,7 @@ EOF
 
 		# Apaga a referência a última interface em kedge
 		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME" | rev | cut -d',' -f2- | rev)
-		sed -i "s/kedge=.*$/${KEDGE}/" "$INTERFACES_FILENAME"
+		sed -i "s/kedge=.*/${KEDGE}/" "$INTERFACES_FILENAME"
 
 	;;
 
