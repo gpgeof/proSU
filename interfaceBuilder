@@ -126,14 +126,25 @@ case "$1" in
 		}
 
 		NUM_INTERFACES=$(sed -n '/kedge=/p' $INTERFACES_FILENAME | rev | cut -d"," -f1)
-		HEADER="Arquivo: $INTERFACES_FILENAME Número de interfaces: $NUM_INTERFACES"
+		HEADER="Arquivo: $INTERFACES_FILENAME Interfaces na pilha: $NUM_INTERFACES"
 
-		SPSPLOT=$(sed -n '/<sp>/,/<\/sp>/p' $INTERFACES_FILENAME | sed '/^#/d;/<sp>/d;/<\/sp>/d' | sed 's/\t//g' | tr "\n" " ")
+		SFILL_PONTOS=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f1-2)
+		SFILL_SLOOTH=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f5)
 
-		INTERFACES=$(sed -n '/<tm>/,/<\/tm>/p' $INTERFACES_FILENAME | sed '/^#/d;/<tm>/d;/<\/tm>/d;/sedge/d')
-		echo -e "$HEADER"
-		echo -e "Interfaces do programa trimodel:\n\t$INTERFACES"
-		echo -e "Parâmetros do programa spsplot:\n\t$SPSPLOT"
+		# Carregar as camadas
+		for i in $(seq $((NUM_INTERFACES-1)))
+		do
+			CAMADAS="Camada $i Ponto: ($(echo "$SFILL_PONTOS" | sed -n "${i}p")) Slooth: $(echo "$SFILL_SLOOTH" | sed -n "${i}p" )\n$CAMADAS"
+
+		done
+
+		# Carregar as interfaces
+		for i in $(seq $NUM_INTERFACES)
+		do
+			INTERFACES="\n*** Interface $i ***\n$(grep "$i xedge=" -A1 "$INTERFACES_FILENAME")\n$INTERFACES"
+		done
+		
+		echo -e "$HEADER\n\nDescrição das camadas:\n$CAMADAS\nDescrição das interfaces:\n$INTERFACES"
 	;;
 
 	-r | --remove) ## Remover a última interface da pilha
