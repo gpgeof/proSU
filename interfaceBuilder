@@ -1,0 +1,146 @@
+#!/bin/bash
+#
+# interfaceBuilder (Shell Script)
+# 
+# Objetivo: Gerar interfaces dos modelos em subsuperfície
+# para o programa geomodel.
+# 
+# Site: https://dirack.github.io
+# 
+# Versão 1.0
+# 
+# Programador: Rodolfo A C Neves (Dirack) 22/03/2020
+# 
+# Email: rodolfo_profissional@hotmail.com
+# 
+# Licença: GPL-3.0 <https://www.gnu.org/licenses/gpl-3.0.txt>.
+
+# Scripts de padronização de mensagens de ajuda e erro
+source mensagemAjuda.sh
+source mensagemErro.sh
+
+## Verificar se o usuário forneceu $1
+if [ -z "$1" ]
+then
+	MENSAGEMERRO="Usuário não ofereceu parâmetros ao programa!\nDigite $(basename $0) -h para obter ajuda!"
+	exibirMensagemErroProgramaFormatada "$(basename $0)" "1" "$MENSAGEMERRO"
+fi
+
+# Versão deste programa
+VERSAO="Versão 1.0"
+
+## Variáveis que armazenam mensagem de ajuda do programa
+NOME_PROGRAMA="$(basename $0)"
+DESCRICAO=" Gerar interfaces do modelo da subsuperfície para o programa geomodel.\n\t As interfaces são geradas em um arquivo com extensão '.itf'"
+PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
+-v --version::Exibe a versão do programa e sai
+-a --add::Adicionar interface
+-s --see::Ver interfaces geradas
+-r --remove::Remover última interface"
+EXEMPLO_DE_USO="~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn
+\t~$ $(basename $0) -s <arquivo.itf>
+\t~$ $(basename $0) -r <arquivo.itf>
+"
+
+case "$1" in
+	-h | --help) ## Exibe a ajuda
+		clear
+		exibirMensagemAjudaProgramaFormatada "$NOME_PROGRAMA" "$DESCRICAO" "$PARAMETROS" "$EXEMPLO_DE_USO"
+		exit 0
+	;;
+
+	-v | --version) ## Exibe a versão do programa
+		echo $VERSAO
+		exit 0
+	;;
+
+	-a | --add) ## Adicionar interface à pilha
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu arquivo das interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		[ -z "$3" -o -z "$4" ] && {
+			MENSAGEMERRO="Vetores de pontos x e y sobre a interface não foram passados ao programa\nDigite $(bsename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
+		echo "$3"
+		echo "$4"
+		INTERFACES=$(sed -n '/<tm>/,/<\/tm>/p' $INTERFACES_FILENAME | sed '/^#/d;/<tm>/d;/<\/tm>/d')
+	;;
+
+	-s | --see) ## Ver todas as interfaces
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu nome do arquivo de interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		NUM_INTERFACES=$(sed -n '/kedge=/p' $INTERFACES_FILENAME | rev | cut -d"," -f1)
+		HEADER="Arquivo: $INTERFACES_FILENAME Número de interfaces: $NUM_INTERFACES"
+
+		SPSPLOT=$(sed -n '/<sp>/,/<\/sp>/p' $INTERFACES_FILENAME | sed '/^#/d;/<sp>/d;/<\/sp>/d' | sed 's/\t//g' | tr "\n" " ")
+
+		INTERFACES=$(sed -n '/<tm>/,/<\/tm>/p' $INTERFACES_FILENAME | sed '/^#/d;/<tm>/d;/<\/tm>/d;/sedge/d')
+		echo -e "$HEADER"
+		echo -e "Interfaces do programa trimodel:\n\t$INTERFACES"
+		echo -e "Parâmetros do programa spsplot:\n\t$SPSPLOT"
+	;;
+
+	-r | --remove) ## Remover a última interface da pilha
+	
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu nome do arquivo de interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+	
+		# Apaga as linhas com a última interface
+		LINHA_IN=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
+		LINHA_OUT=$((LINHA_IN+3))
+		sed -i "${LINHA_IN},${LINHA_OUT}d" "$INTERFACES_FILENAME"
+
+		# Apaga o última camada
+		LINHA=$(grep -n "sfill=" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
+		sed -i "${LINHAd}" "$INTERFACES_FILENAME"
+
+		# Apaga a referência a última interface em kedge
+		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME" | rev | cut -d',' -f2- | rev)
+		sed -i "s/kedge=.*$/${KEDGE}/" "$INTERFACES_FILENAME"
+
+	;;
+
+	*)
+		MENSAGEMERRO="Opção $1 Desconhecida!\nDigite $(basename $0) -h para obter ajuda"
+		exibirMensagemErroProgramaFormatada "$(basename $0)" "4" "$MENSAGEMERRO"
+	;;
+esac
