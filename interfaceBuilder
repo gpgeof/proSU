@@ -34,10 +34,12 @@ NOME_PROGRAMA="$(basename $0)"
 DESCRICAO=" Gerar interfaces do modelo da subsuperfície para o programa geomodel.\n\t As interfaces são geradas em um arquivo com extensão '.itf'"
 PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
 -v --version::Exibe a versão do programa e sai
+-c --create::Criar um novo modelo
 -a --add::Adicionar interface
 -s --see::Ver interfaces geradas
 -r --remove::Remover última interface"
-EXEMPLO_DE_USO="~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
+EXEMPLO_DE_USO="~$ $(basename $0) -c arquivo.itf
+\t~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
 \t~$ $(basename $0) -s <arquivo.itf>
 \t~$ $(basename $0) -r <arquivo.itf>
 "
@@ -54,6 +56,72 @@ case "$1" in
 		exit 0
 	;;
 
+	-c | --create) ## Criar um novo modelo
+		
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu um nome de arquivo\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -f "$2" ] && {
+			MENSAGEMERRO="Modelo $2 já existe!\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		echo "Forneça os parâmetros de plotagem do modelo a seguir:"
+		read -p "Título: " TITULO
+		read -p "Amostragem eixo x: " DXNUM
+		read -p "Amostragem eixo z: " DZNUM
+		read -p "Legenda eixo z: " LABELZ
+		read -p "Legenda eixo x: " LABELX
+		echo "Forneça dimensões do modelo a seguir:"
+		read -p "xmin (km): " XMIN
+		read -p "xmax (km): " XMAX
+		read -p "zmin (km): " ZMIN
+		read -p "zmax (km): " ZMAX
+
+		XEDGE="$XMIN"
+		ZEDGE="$ZMIN"
+		DX=$(echo "scale=2; ($XMAX-$XMIN)/10" | bc -l)
+
+		# Faça a primeira interface (Superfície de aquisição)
+		for i in $(seq 9)
+		do
+			XEDGE="${XEDGE},$(echo "$i*$DX+$XMIN" | bc -l)"
+			ZEDGE="${ZEDGE},$ZMIN"
+			
+		done
+
+		XEDGE="1 xedge=$XEDGE"
+		ZEDGE="zedge=$ZEDGE"
+
+cat > $2 <<EOF
+# Arquivo de interfaces para o programa geomodel
+# As linhas iniciadas com '#' serão ignoradas!
+# As linhas marcadas '< >' representam entradas de
+# parâmetros dos programas 
+
+# Parâmetros do spsplot para gerar uma imagem eps do modelo
+<sp>
+gedge=0.5 gtri=2.0 gmin=0.2 gmax=1.0
+titlesize=20
+labelsize=18 dxnum=$DXNUM dznum=$DZNUM wbox=15 hbox=8
+title="$TITULO"
+labelz="$LABELZ" labelx="$LABELX"
+</sp>
+
+# Parâmetros do programa trimodel
+<tm>
+xmin=$XMIN zmin=$ZMIN xmax=$XMAX zmax=$ZMAX
+$XEDGE
+$ZEDGE
+kedge=1
+</tm>
+EOF
+
+	;;
 	-a | --add) ## Adicionar interface à pilha
 
 		## Verificar se o usuário forneceu os arquivos
