@@ -37,7 +37,7 @@ PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
 -a --add::Adicionar interface
 -s --see::Ver interfaces geradas
 -r --remove::Remover última interface"
-EXEMPLO_DE_USO="~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn
+EXEMPLO_DE_USO="~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
 \t~$ $(basename $0) -s <arquivo.itf>
 \t~$ $(basename $0) -r <arquivo.itf>
 "
@@ -76,9 +76,37 @@ case "$1" in
 
 		}
 
-		echo "$3"
-		echo "$4"
-		INTERFACES=$(sed -n '/<tm>/,/<\/tm>/p' $INTERFACES_FILENAME | sed '/^#/d;/<tm>/d;/<\/tm>/d')
+		[ -z "$5" ] && {
+			MENSAGEMERRO="Parâmetro sfill não foi passado ao programa\nDigite $(bsename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
+		TMP=$(mktemp /tmp/interfaces_tmp-XXXX.itf)
+		XEDGE="$3"
+		ZEDGE="$4"
+		SFILL_PONTO=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f1)
+		SFILL_SLOOTH=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f2)
+		KEDGE=$(grep -n "kedge=" "$INTERFACES_FILENAME" | rev | cut -d"," -f1)
+		NUM_PONTOS=$(echo "$XEDGE" | cut -d"=" -f2 | tr "," "\n" | wc -l)
+		SEDGE="sedge=0"
+		for i in $(seq $((NUM_PONTOS-1)))
+		do
+			SEDGE="${SEDGE},0"
+		done
+		LAST_INTERFACE=$(grep -n "$KEDGE xedge" "$INTERFACES_FILENAME" | cut -d":" -f1)
+		LINHA=$((LAST_INTERFACE+2))
+		sed -n "1,${LINHA}p" "$INTERFACES_FILENAME" > "$TMP"
+		echo "$((KEDGE+1)) xedge=${XEDGE##*=}" >> "$TMP"
+		echo "zedge=${ZEDGE##*=}" >> "$TMP"
+		echo "$SEDGE" >> "$TMP"
+		sed -n "/sfill=/p" "$INTERFACES_FILENAME" >> "$TMP"
+		echo "sfill=0,$SFILL_PONTO,0,0,$SFILL_SLOOTH,0,0" >> $TMP
+		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME")
+		KEDGE=$(echo "$KEDGE" | sed "s/^.*kedge=.*$/$KEDGE,$((KEDGE+1))/")
+	       	echo "$KEDGE" >> "$TMP"
+		sed -n '/<\/tm>/,$p' "$INTERFACES_FILENAME" >> "$TMP"
+		mv "$TMP" "$INTERFACES_FILENAME"
 	;;
 
 	-s | --see) ## Ver todas as interfaces
