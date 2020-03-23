@@ -165,12 +165,12 @@ case "$1" in
 	
 		# Apaga as linhas com a última interface
 		LINHA_IN=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
-		LINHA_OUT=$((LINHA_IN+3))
+		LINHA_OUT=$((LINHA_IN+2))
 		sed -i "${LINHA_IN},${LINHA_OUT}d" "$INTERFACES_FILENAME"
 
 		# Apaga o última camada
-		LINHA=$(grep -n "sfill=" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
-		sed -i "${LINHAd}" "$INTERFACES_FILENAME"
+		LINHA=$(grep -n "sfill=" "$INTERFACES_FILENAME" | tail -n -1 | cut -d":" -f1)
+		sed -i "${LINHA}d" "$INTERFACES_FILENAME"
 
 		# Apaga a referência a última interface em kedge
 		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME" | rev | cut -d',' -f2- | rev)
