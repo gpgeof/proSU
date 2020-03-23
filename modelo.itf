@@ -1,5 +1,19 @@
 # Arquivo de interfaces para o programa geomodel
 # As linhas iniciadas com '#' serão ignoradas!
+# As linhas marcadas '< >' representam entradas de
+# parâmetros dos programas 
+
+# Parâmetros do spsplot para gerar uma imagem eps do modelo
+<sp>
+	gedge=0.5 gtri=2.0 gmin=0.2 gmax=1.0
+        titlesize=20
+        labelsize=18 dxnum=1.0 dznum=0.5 wbox=15 hbox=8
+        title="Modelo de camadas curvas"
+        labelz="Profundidade (km)" labelx="Distancia (km)"
+</sp>
+
+# Parâmetros do programa trimodel
+<tm>
 xmin=0 zmin=0 xmax=12.0 zmax=3.5 
 	1 xedge=0,2,4,6,8,10,12 
 	zedge=0,0,0,0,0,0,0 
@@ -32,4 +46,5 @@ xmin=0 zmin=0 xmax=12.0 zmax=3.5
 	sfill=0,2.0,0,0,0.55,0,0 
 	sfill=0,2.4,0,0,0.44,0,0 
 	sfill=0,3.0,0,0,0.16,0,0 
-	kedge=1,2,3,4,5,6,7,8 	
+	kedge=1,2,3,4,5,6,7,8
+</tm>
