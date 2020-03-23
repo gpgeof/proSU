@@ -33,10 +33,10 @@ NOME_PROGRAMA="$(basename $0)"
 DESCRICAO=" Gerar modelo da subsuperfície para o programa triseis do SU."
 PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
 -v --version::Exibe a versão do programa e sai
--m --model::Gerar o modelo em arquivo binário
+-m --model::Gerar o modelo de interfaces no fomato do trimodel
 -i --image::Gerar imagem eps de modelo gerado com -m"
-EXEMPLO_DE_USO="~$ $(basename $0) -m <nome do arquivo binário>
-\t~$ $(basename $0) -i <arquivo gerado com a opção -m>
+EXEMPLO_DE_USO="~$ $(basename $0) -m <modelo> <interfaces>
+\t~$ $(basename $0) -i <modelo>
 "
 
 case "$1" in
@@ -54,46 +54,23 @@ case "$1" in
 	-m | --model) ## Gerar modelo com trimodel
 
 		## Caso o usuário não fornecer um nome para o arquivo, gere um aleatório
-		[ -z "$2" ] && {
-			echo "Usuário não forneceu nome do arquivo, criando um nome..."
-			MODEL_FILENAME=$(mktemp model-XXXX.bin)
-			echo "Arquivo: $MODEL_FILENAME"
-		}	
-		
-		trimodel xmin=0 zmin=0 xmax=12.0 zmax=3.5 \
-			 1 xedge=0,2,4,6,8,10,12 \
-			   zedge=0,0,0,0,0,0,0 \
-			   sedge=0,0,0,0,0,0,0 \
-			 2 xedge=0,12 \
-			   zedge=0.3,0.25 \
-			   sedge=0,0 \
-			 3 xedge=0,12 \
-			   zedge=0.7,0.45 \
-			   sedge=0,0 \
-			 4 xedge=0,2,4,6,8,10,12 \
-			   zedge=1.2,1.2,1.3,1.4,0.7,1.05,1.2 \
-			   sedge=0,0,0,0,0,0,0 \
-			 5 xedge=0,2,4,6,8,10,12 \
-			   zedge=1.7,1.7,1.8,2.0,1.1,1.45,1.8 \
-			   sedge=0,0,0,0,0,0,0 \
-			 6 xedge=0,2,4,6,8,10,12 \
-			   zedge=2.2,2.2,2.3,2.5,1.6,1.9,2.2  \
-			   sedge=0,0,0,0,0,0,0 \
-			 7 xedge=0,2,4,6,8,10,12 \
-			   zedge=2.7,2.7,2.8,2.9,2.2,2.4,2.7 \
-			   sedge=0,0,0,0,0,0,0 \
-			 8 xedge=0,2,4,6,8,10,12 \
-			   zedge=3.5,3.5,3.5,3.5,3.5,3.5,3.5 \
-			   sedge=0,0,0,0,0,0,0 \
-			   sfill=0,0.1,0,0,0.39,0,0 \
-			   sfill=0,0.4,0,0,0.31,0,0 \
-			   sfill=0,0.9,0,0,0.28,0,0 \
-			   sfill=0,1.5,0,0,0.25,0,0 \
-			   sfill=0,2.0,0,0,0.55,0,0 \
-			   sfill=0,2.4,0,0,0.44,0,0 \
-			   sfill=0,3.0,0,0,0.16,0,0 \
-			   kedge=1,2,3,4,5,6,7,8 \
-			   >"${MODEL_FILENAME}"
+		[ -z "$2" -o -z "$3" ] && {
+			MENSAGEMERRO="Usuário não forneceu nomes do arquivos do modelo e/ou das interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		MODEL_FILENAME="$2"
+		INTERFACES_FILENAME="$3"
+
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		INTERFACES=$(sed -n '/^#/!p' $INTERFACES_FILENAME)
+		trimodel $INTERFACES > "${MODEL_FILENAME}"
 	;;
 
 	-i | --image) ## Gerar imagem EPS do modelo
