@@ -139,7 +139,7 @@ EOF
 		}
 
 		[ -z "$3" -o -z "$4" ] && {
-			MENSAGEMERRO="Vetores de pontos x e y sobre a interface não foram passados ao programa\nDigite $(bsename $0) -h para obter ajuda"
+			MENSAGEMERRO="Vetores de pontos x e y sobre a interface não foram passados ao programa\nDigite $(basename $0) -h para obter ajuda"
 			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
 
 		}
@@ -193,18 +193,24 @@ EOF
 			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
 		}
 
-		NUM_INTERFACES=$(sed -n '/kedge=/p' $INTERFACES_FILENAME | rev | cut -d"," -f1)
+		NUM_INTERFACES=$(grep '[0-9] xedge' "$INTERFACES_FILENAME" | wc -l)
+
 		HEADER="Arquivo: $INTERFACES_FILENAME Interfaces na pilha: $NUM_INTERFACES"
 
-		SFILL_PONTOS=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f1-2)
-		SFILL_SLOOTH=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f5)
+		# Precisa de no mínimo duas interfaces para 
+		# formar uma camada
+		[ "$NUM_INTERFACES" -gt "1" ] && {
 
-		# Carregar as camadas
-		for i in $(seq $((NUM_INTERFACES-1)))
-		do
-			CAMADAS="Camada $i Ponto: ($(echo "$SFILL_PONTOS" | sed -n "${i}p")) Slooth: $(echo "$SFILL_SLOOTH" | sed -n "${i}p" )\n$CAMADAS"
+			SFILL_PONTOS=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f1-2)
+			SFILL_SLOOTH=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f5)
 
-		done
+			# Carregar as camadas
+			for i in $(seq $((NUM_INTERFACES-1)))
+			do
+				CAMADAS="Camada $i Ponto: ($(echo "$SFILL_PONTOS" | sed -n "${i}p")) Slooth: $(echo "$SFILL_SLOOTH" | sed -n "${i}p" )\n$CAMADAS"
+
+			done
+		}
 
 		# Carregar as interfaces
 		for i in $(seq $NUM_INTERFACES)
