@@ -163,6 +163,14 @@ case "$1" in
 			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
 		}
 	
+		# Impedir a remoção se só tiver uma interface
+		NUM_INTERFACES=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | wc -l)
+		[ "$NUM_INTERFACES" -eq "1" ] && {
+			MENSAGEMERRO="Não é permitido remover a última interface\nTente construir um novo modelo!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
 		# Apaga as linhas com a última interface
 		LINHA_IN=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
 		LINHA_OUT=$((LINHA_IN+2))
