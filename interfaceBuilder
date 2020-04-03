@@ -38,7 +38,7 @@ PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
 -a --add::Adicionar interface
 -s --see::Ver interfaces geradas
 -r --remove::Remover última interface"
-EXEMPLO_DE_USO="~$ $(basename $0) -c arquivo.itf
+EXEMPLO_DE_USO="~$ $(basename $0) -c arquivo.itf <xmin> <xmax> <zmin> <zmax>
 \t~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
 \t~$ $(basename $0) -s <arquivo.itf>
 \t~$ $(basename $0) -r <arquivo.itf>
@@ -70,17 +70,23 @@ case "$1" in
 			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
 		}
 
-		echo "Forneça os parâmetros de plotagem do modelo a seguir:"
-		read -p "Título: " TITULO
-		read -p "Amostragem eixo x: " DXNUM
-		read -p "Amostragem eixo z: " DZNUM
-		read -p "Legenda eixo z: " LABELZ
-		read -p "Legenda eixo x: " LABELX
-		echo "Forneça dimensões do modelo a seguir:"
-		read -p "xmin (km): " XMIN
-		read -p "xmax (km): " XMAX
-		read -p "zmin (km): " ZMIN
-		read -p "zmax (km): " ZMAX
+		# Parâmetros de plotagem do modelo
+		TITULO='<TITULO>'
+		DXNUM='<Amostragem eixo x (km)>'
+		DZNUM='<Amostragem eixo z (Km)>'
+		LABELZ='<Legenda eixo z>'
+		LABELX='<Legenda eixo x>'
+		
+		#Dimensões do modelo
+		[ "$#" -lt "6" ] && {
+			MENSAGEMERRO="Usuário não forneceu as dimensões do modelo xmin xmax zmin zmax!\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		XMIN="$3"
+		XMAX="$4"
+		ZMIN="$5"
+		ZMAX="$6"
 
 		XEDGE="$XMIN"
 		ZEDGE="$ZMIN"
