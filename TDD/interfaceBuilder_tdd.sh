@@ -48,6 +48,11 @@ done
 
 error "$ERRO" "0" "2" "Adicionar interfaces ao modelo $TMP"
 
-# Remover uma interface da pilha
-#error "" "" "" "Remover uma interface do modelo .itf"
+# Testar remover uma interface da pilha
+NUM_INTERFACES_ANTES=$($DIR/interfaceBuilder -s "$TMP" | grep Arquivo | rev | cut -d" " -f1)
+error "$?" "0" "3" "Ver informações sobre o modelo $TMP"
 
+$DIR/interfaceBuilder -r "$TMP"
+NUM_INTERFACES_DEPOIS=$($DIR/interfaceBuilder -s "$TMP" | grep Arquivo | rev | cut -d" " -f1)
+RESULTADO=$(echo "${NUM_INTERFACES_ANTES}-1" | bc)
+error "$NUM_INTERFACES_DEPOIS" "$RESULTADO" "4" "Testar número de interfaces após remoção $TMP"
