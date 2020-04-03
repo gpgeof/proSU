@@ -16,6 +16,7 @@
 
 source $(dirname $0)/tdd_lib.sh
 
+# Verificar diretório do programa a ser testado
 DIR=".."
 
 [ -f "./interfaceBuilder" ] && {
@@ -29,6 +30,7 @@ trap "rm $TMP" err exit
 
 error "$($DIR/interfaceBuilder -c $TMP 0 12 0 3.5 && echo $?)" "0" "1" "Criar novo modelo .itf" 
 
+# Teste adicionar 7 interfaces ao modelo em um looping
 echo "Adicionar 7 interfaces ao modelo..."
 xedge=("0,12" "0,12" "0,2,4,6,8,10,12" "0,2,4,6,8,10,12" "0,2,4,6,8,10,12" "0,2,4,6,8,10,12" "0,2,4,6,8,10,12")
 zedge=("0.3,0.25" "0.7,0.45" "1.2,1.2,1.3,1.4,0.7,1.05,1.2" "1.7,1.7,1.8,2.0,1.1,1.45,1.8" "2.2,2.2,2.3,2.5,1.6,1.9,2.2" "2.7,2.7,2.8,2.9,2.2,2.4,2.7" "3.5,3.5,3.5,3.5,3.5,3.5,3.5")
@@ -52,6 +54,7 @@ error "$ERRO" "0" "2" "Adicionar interfaces ao modelo $TMP"
 NUM_INTERFACES_ANTES=$($DIR/interfaceBuilder -s "$TMP" | grep Arquivo | rev | cut -d" " -f1)
 error "$?" "0" "3" "Ver informações sobre o modelo $TMP"
 
+# Comparar número de interfaces depois da remoção com antes
 $DIR/interfaceBuilder -r "$TMP"
 NUM_INTERFACES_DEPOIS=$($DIR/interfaceBuilder -s "$TMP" | grep Arquivo | rev | cut -d" " -f1)
 RESULTADO=$(echo "${NUM_INTERFACES_ANTES}-1" | bc)
