@@ -102,6 +102,7 @@ case "$1" in
 
 		XEDGE="1 xedge=$XEDGE"
 		ZEDGE="zedge=$ZEDGE"
+		SEDGE="sedge=0,0,0,0,0,0,0,0,0,0"
 
 cat > $2 <<EOF
 # Arquivo de interfaces para o programa geomodel
@@ -123,6 +124,7 @@ labelz="$LABELZ" labelx="$LABELX"
 xmin=$XMIN zmin=$ZMIN xmax=$XMAX zmax=$ZMAX
 $XEDGE
 $ZEDGE
+$SEDGE
 kedge=1
 </tm>
 EOF
@@ -176,9 +178,9 @@ EOF
 		echo "$SEDGE" >> "$TMP"
 		sed -n "/sfill=/p" "$INTERFACES_FILENAME" >> "$TMP"
 		echo "sfill=0,$SFILL_PONTO,0,0,$SFILL_SLOOTH,0,0" >> $TMP
-		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME")
-		KEDGE=$(echo "$KEDGE" | sed "s/^.*kedge=.*$/$KEDGE,$((KEDGE+1))/")
-	       	echo "$KEDGE" >> "$TMP"
+		KEDGE=$(grep 'kedge=' "$INTERFACES_FILENAME")
+		KEDGE=$(echo "${KEDGE},$((KEDGE+1))")
+	       	echo "${KEDGE}" >> "$TMP"
 		sed -n '/<\/tm>/,$p' "$INTERFACES_FILENAME" >> "$TMP"
 		mv "$TMP" "$INTERFACES_FILENAME"
 	;;
