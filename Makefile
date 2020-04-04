@@ -12,7 +12,7 @@
 # 
 # Licença: GPL-3.0 <https://www.gnu.org/licenses/gpl-3.0.txt>.
 
-TESTES=interfaceBuilder
+TESTES=interfaceBuilder geomodel
 DIR_TESTES=./TDD
 
 test:	$(TESTES:=_tdd.sh)
