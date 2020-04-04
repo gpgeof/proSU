@@ -1,6 +1,8 @@
 # Processamento Sísmico no Seismic Unix (SU)
 >Fluxo de processamento sísmico no SU, scripts e relatório de processamento
 
+[![Build Status](https://travis-ci.org/Dirack/proSU.svg?branch=master)](https://travis-ci.org/Dirack/proSU)
+
 [Programas e relatório desenvolvidos originalmente por Murilo Santiago](https://github.com/sanmurilo)
 
 ![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/relatorio_original/figuras/cap2/campovel_suavizado.png)
