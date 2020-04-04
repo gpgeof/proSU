@@ -5,7 +5,7 @@
 
 [Programas e relatório desenvolvidos originalmente por Murilo Santiago](https://github.com/sanmurilo)
 
-![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/relatorio_original/figuras/cap2/campovel_suavizado.png)
+![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/campovel_suavizado.png)
 
 Este repositório é uma biblioteca de scripts para o pacote de processamento sísmico Seismic Unix (SU) em 
 linguagem Shell Script. Funciona como uma interface de linha de comandos para a utilização dos programas do pacote
