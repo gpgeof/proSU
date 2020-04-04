@@ -88,21 +88,9 @@ case "$1" in
 		ZMIN="$5"
 		ZMAX="$6"
 
-		XEDGE="$XMIN"
-		ZEDGE="$ZMIN"
-		DX=$(echo "scale=2; ($XMAX-$XMIN)/10" | bc -l)
-
-		# Faça a primeira interface (Superfície de aquisição)
-		for i in $(seq 9)
-		do
-			XEDGE="${XEDGE},$(echo "$i*$DX+$XMIN" | bc -l)"
-			ZEDGE="${ZEDGE},$ZMIN"
-			
-		done
-
-		XEDGE="1 xedge=$XEDGE"
-		ZEDGE="zedge=$ZEDGE"
-		SEDGE="sedge=0,0,0,0,0,0,0,0,0,0"
+		XEDGE="1 xedge=${XMIN},${XMAX}"
+		ZEDGE="zedge=${ZMIN},${ZMIN}"
+		SEDGE="sedge=0,0"
 
 cat > $2 <<EOF
 # Arquivo de interfaces para o programa geomodel
