@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# geomodel (Shell Script)
+# 
+# Objetivo: Gerar modelo da subsuperfície para o programa triseis do SU.
+# 
+# Site: https://dirack.github.io
+# 
+# Versão 1.0
+# 
+# Programador: Rodolfo A C Neves (Dirack) 22/03/2020
+# 
+# Email: rodolfo_profissional@hotmail.com
+# 
+# Licença: GPL-3.0 <https://www.gnu.org/licenses/gpl-3.0.txt>.
+
+# Scripts de padronização de mensagens de ajuda e erro
+source mensagemAjuda.sh
+source mensagemErro.sh
+
+## Verificar se o usuário forneceu $1
+if [ -z "$1" ]
+then
+	MENSAGEMERRO="Usuário não ofereceu parâmetros ao programa!\nDigite $(basename $0) -h para obter ajuda!"
+	exibirMensagemErroProgramaFormatada "$(basename $0)" "1" "$MENSAGEMERRO"
+fi
+
+# Versão deste programa
+VERSAO="Versão 1.0"
+
+## Variáveis que armazenam mensagem de ajuda do programa
+NOME_PROGRAMA="$(basename $0)"
+DESCRICAO=" Gerar modelo da subsuperfície para o programa triseis do SU.\n\t Lê as interfaces de arquivo .itf gerado pelo programa geobuilder"
+PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
+-v --version::Exibe a versão do programa e sai
+-m --model::Gerar o modelo de interfaces no fomato do trimodel
+-i --image::Gerar imagem eps de modelo gerado com -m"
+EXEMPLO_DE_USO="~$ $(basename $0) -m <modelo.bin> <interfaces.itf>
+\t~$ $(basename $0) -i <modelo.bin> <interfaces.itf>
+"
+
+case "$1" in
+	-h | --help) ## Exibe a ajuda
+		clear
+		exibirMensagemAjudaProgramaFormatada "$NOME_PROGRAMA" "$DESCRICAO" "$PARAMETROS" "$EXEMPLO_DE_USO"
+		exit 0
+	;;
+
+	-v | --version) ## Exibe a versão do programa
+		echo $VERSAO
+		exit 0
+	;;
+
+	-m | --model) ## Gerar modelo com trimodel
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" -o -z "$3" ] && {
+			MENSAGEMERRO="Usuário não forneceu nomes do arquivos do modelo e/ou das interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		MODEL_FILENAME="$2"
+		INTERFACES_FILENAME="$3"
+
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		INTERFACES=$(sed -n '/<tm>/,/<\/tm>/p' $INTERFACES_FILENAME | sed '/^#/d;/<tm>/d;/<\/tm>/d')
+		trimodel $INTERFACES > "${MODEL_FILENAME}"
+	;;
+
+	-i | --image) ## Gerar imagem EPS do modelo
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" -o -z "$3" ] && {
+			MENSAGEMERRO="Usuário não forneceu nomes do arquivos do modelo e/ou das interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		MODEL_FILENAME="$2"
+		INTERFACES_FILENAME="$3"
+
+		# Verificar se o arquivo está na pasta
+		[ -f "$MODEL_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $MODEL_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		IMG_PARAMETERS=$(sed -n '/<sp>/,/<\/sp>/p' $INTERFACES_FILENAME | sed '/^#/d;/<sp>/d;/<\/sp>/d')
+
+		spsplot < "$MODEL_FILENAME" > "${MODEL_FILENAME%%.*}.eps" \
+		$IMG_PARAMETERS
+	;;
+
+	*)
+		MENSAGEMERRO="Opção $1 Desconhecida!\nDigite $(basename $0) -h para obter ajuda"
+		exibirMensagemErroProgramaFormatada "$(basename $0)" "4" "$MENSAGEMERRO"
+	;;
+esac

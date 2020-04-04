@@ -1,0 +1,275 @@
+#!/bin/bash
+#
+# interfaceBuilder (Shell Script)
+# 
+# Objetivo: Gerar interfaces dos modelos em subsuperfície
+# para o programa geomodel.
+# 
+# Site: https://dirack.github.io
+# 
+# Versão 1.0
+# 
+# Programador: Rodolfo A C Neves (Dirack) 22/03/2020
+# 
+# Email: rodolfo_profissional@hotmail.com
+# 
+# Licença: GPL-3.0 <https://www.gnu.org/licenses/gpl-3.0.txt>.
+
+# Scripts de padronização de mensagens de ajuda e erro
+source mensagemAjuda.sh
+source mensagemErro.sh
+
+## Verificar se o usuário forneceu $1
+if [ -z "$1" ]
+then
+	MENSAGEMERRO="Usuário não ofereceu parâmetros ao programa!\nDigite $(basename $0) -h para obter ajuda!"
+	exibirMensagemErroProgramaFormatada "$(basename $0)" "1" "$MENSAGEMERRO"
+fi
+
+# Versão deste programa
+VERSAO="Versão 1.0"
+
+## Variáveis que armazenam mensagem de ajuda do programa
+NOME_PROGRAMA="$(basename $0)"
+DESCRICAO=" Gerar interfaces do modelo da subsuperfície para o programa geomodel.\n\t As interfaces são geradas em um arquivo com extensão '.itf'"
+PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
+-v --version::Exibe a versão do programa e sai
+-c --create::Criar um novo modelo
+-a --add::Adicionar interface
+-s --see::Ver interfaces geradas
+-r --remove::Remover última interface"
+EXEMPLO_DE_USO="~$ $(basename $0) -c arquivo.itf <xmin> <xmax> <zmin> <zmax>
+\t~$ $(basename $0) -a <arquivo.itf> x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
+\t~$ $(basename $0) -s <arquivo.itf>
+\t~$ $(basename $0) -r <arquivo.itf>
+"
+
+case "$1" in
+	-h | --help) ## Exibe a ajuda
+		clear
+		exibirMensagemAjudaProgramaFormatada "$NOME_PROGRAMA" "$DESCRICAO" "$PARAMETROS" "$EXEMPLO_DE_USO"
+		exit 0
+	;;
+
+	-v | --version) ## Exibe a versão do programa
+		echo $VERSAO
+		exit 0
+	;;
+
+	-c | --create) ## Criar um novo modelo
+		
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu um nome de arquivo\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -f "$2" ] && {
+			MENSAGEMERRO="Modelo $2 já existe!\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		# Parâmetros de plotagem do modelo
+		TITULO='<TITULO>'
+		DXNUM='<Amostragem eixo x (km)>'
+		DZNUM='<Amostragem eixo z (Km)>'
+		LABELZ='<Legenda eixo z>'
+		LABELX='<Legenda eixo x>'
+		
+		#Dimensões do modelo
+		[ "$#" -lt "6" ] && {
+			MENSAGEMERRO="Usuário não forneceu as dimensões do modelo xmin xmax zmin zmax!\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		XMIN="$3"
+		XMAX="$4"
+		ZMIN="$5"
+		ZMAX="$6"
+
+		XEDGE="$XMIN"
+		ZEDGE="$ZMIN"
+		DX=$(echo "scale=2; ($XMAX-$XMIN)/10" | bc -l)
+
+		# Faça a primeira interface (Superfície de aquisição)
+		for i in $(seq 9)
+		do
+			XEDGE="${XEDGE},$(echo "$i*$DX+$XMIN" | bc -l)"
+			ZEDGE="${ZEDGE},$ZMIN"
+			
+		done
+
+		XEDGE="1 xedge=$XEDGE"
+		ZEDGE="zedge=$ZEDGE"
+		SEDGE="sedge=0,0,0,0,0,0,0,0,0,0"
+
+cat > $2 <<EOF
+# Arquivo de interfaces para o programa geomodel
+# As linhas iniciadas com '#' serão ignoradas!
+# As linhas marcadas '< >' representam entradas de
+# parâmetros dos programas 
+
+# Parâmetros do spsplot para gerar uma imagem eps do modelo
+<sp>
+gedge=0.5 gtri=2.0 gmin=0.2 gmax=1.0
+titlesize=20
+labelsize=18 dxnum=$DXNUM dznum=$DZNUM wbox=15 hbox=8
+title="$TITULO"
+labelz="$LABELZ" labelx="$LABELX"
+</sp>
+
+# Parâmetros do programa trimodel
+<tm>
+xmin=$XMIN zmin=$ZMIN xmax=$XMAX zmax=$ZMAX
+$XEDGE
+$ZEDGE
+$SEDGE
+kedge=1
+</tm>
+EOF
+
+	;;
+	-a | --add) ## Adicionar interface à pilha
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu arquivo das interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		[ -z "$3" -o -z "$4" ] && {
+			MENSAGEMERRO="Vetores de pontos x e y sobre a interface não foram passados ao programa\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
+		[ -z "$5" ] && {
+			MENSAGEMERRO="Parâmetro sfill não foi passado ao programa\nDigite $(bsename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
+		TMP=$(mktemp /tmp/interfaces_tmp-XXXX.itf)
+		XEDGE="$3"
+		ZEDGE="$4"
+		SFILL_PONTO=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f1)
+		SFILL_SLOOTH=$(echo "$5" | cut -d"=" -f2 | cut -d"," -f2)
+		KEDGE=$(grep -n "[0-9] xedge=" "$INTERFACES_FILENAME" | wc -l)
+		NUM_PONTOS=$(echo "$XEDGE" | cut -d"=" -f2 | tr "," "\n" | wc -l)
+		SEDGE="sedge=0"
+		for i in $(seq $((NUM_PONTOS-1)))
+		do
+			SEDGE="${SEDGE},0"
+		done
+		LAST_INTERFACE=$(grep -n "$KEDGE xedge" "$INTERFACES_FILENAME" | cut -d":" -f1)
+		LINHA=$((LAST_INTERFACE+2))
+		sed -n "1,${LINHA}p" "$INTERFACES_FILENAME" > "$TMP"
+		echo "$((KEDGE+1)) xedge=${XEDGE##*=}" >> "$TMP"
+		echo "zedge=${ZEDGE##*=}" >> "$TMP"
+		echo "$SEDGE" >> "$TMP"
+		sed -n "/sfill=/p" "$INTERFACES_FILENAME" >> "$TMP"
+		echo "sfill=0,$SFILL_PONTO,0,0,$SFILL_SLOOTH,0,0" >> $TMP
+		KEDGE=$(grep 'kedge=' "$INTERFACES_FILENAME")
+		KEDGE=$(echo "${KEDGE},$((KEDGE+1))")
+	       	echo "${KEDGE}" >> "$TMP"
+		sed -n '/<\/tm>/,$p' "$INTERFACES_FILENAME" >> "$TMP"
+		mv "$TMP" "$INTERFACES_FILENAME"
+	;;
+
+	-s | --see) ## Ver todas as interfaces
+
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu nome do arquivo de interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+
+		NUM_INTERFACES=$(grep '[0-9] xedge' "$INTERFACES_FILENAME" | wc -l)
+
+		HEADER="Arquivo: $INTERFACES_FILENAME Interfaces na pilha: $NUM_INTERFACES"
+
+		# Precisa de no mínimo duas interfaces para 
+		# formar uma camada
+		[ "$NUM_INTERFACES" -gt "1" ] && {
+
+			SFILL_PONTOS=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f1-2)
+			SFILL_SLOOTH=$(grep "sfill=" "$INTERFACES_FILENAME" | cut -d"=" -f2 | cut -d"," -f5)
+
+			# Carregar as camadas
+			for i in $(seq $((NUM_INTERFACES-1)))
+			do
+				CAMADAS="Camada $i Ponto: ($(echo "$SFILL_PONTOS" | sed -n "${i}p")) Slooth: $(echo "$SFILL_SLOOTH" | sed -n "${i}p" )\n$CAMADAS"
+
+			done
+		}
+
+		# Carregar as interfaces
+		for i in $(seq $NUM_INTERFACES)
+		do
+			INTERFACES="\n*** Interface $i ***\n$(grep "$i xedge=" -A1 "$INTERFACES_FILENAME")\n$INTERFACES"
+		done
+		
+		echo -e "$HEADER\n\nDescrição das camadas:\n$CAMADAS\nDescrição das interfaces:\n$INTERFACES"
+	;;
+
+	-r | --remove) ## Remover a última interface da pilha
+	
+		## Verificar se o usuário forneceu os arquivos
+		[ -z "$2" ] && {
+			MENSAGEMERRO="Usuário não forneceu nome do arquivo de interfaces\nDigite $(basename $0) -h para obter ajuda"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "2" "$MENSAGEMERRO"
+		}
+
+		INTERFACES_FILENAME="$2"
+
+		# Verificar se o arquivo de interfaces está na pasta
+		[ -f "$INTERFACES_FILENAME" ] || {
+			MENSAGEMERRO="Arquivo $INTERFACES_FILENAME não encontrado!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+		}
+	
+		# Impedir a remoção se só tiver uma interface
+		NUM_INTERFACES=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | wc -l)
+		[ "$NUM_INTERFACES" -eq "1" ] && {
+			MENSAGEMERRO="Não é permitido remover a última interface\nTente construir um novo modelo!"
+			exibirMensagemErroProgramaFormatada "$(basename $0)" "3" "$MENSAGEMERRO"
+
+		}
+
+		# Apaga as linhas com a última interface
+		LINHA_IN=$(grep -n "[0-9] xedge" "$INTERFACES_FILENAME" | tac | head -1 | cut -d":" -f1)
+		LINHA_OUT=$((LINHA_IN+2))
+		sed -i "${LINHA_IN},${LINHA_OUT}d" "$INTERFACES_FILENAME"
+
+		# Apaga o última camada
+		LINHA=$(grep -n "sfill=" "$INTERFACES_FILENAME" | tail -n -1 | cut -d":" -f1)
+		sed -i "${LINHA}d" "$INTERFACES_FILENAME"
+
+		# Apaga a referência a última interface em kedge
+		KEDGE=$(sed -n '/kedge=/p' "$INTERFACES_FILENAME" | rev | cut -d',' -f2- | rev)
+		sed -i "s/kedge=.*/${KEDGE}/" "$INTERFACES_FILENAME"
+
+	;;
+
+	*)
+		MENSAGEMERRO="Opção $1 Desconhecida!\nDigite $(basename $0) -h para obter ajuda"
+		exibirMensagemErroProgramaFormatada "$(basename $0)" "4" "$MENSAGEMERRO"
+	;;
+esac
