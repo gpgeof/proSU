@@ -2,8 +2,8 @@
 
 .SH NOME
 interfaceBuilder - Gerar arquivo ITF, arquivo de interfaces lido pelo programa geomodel.
-Geomodel realiza a modelagem com o programa triseis do pacote SU a partir dos modelos
-gerados por este programa.
+Geomodel cria o modelo em um formato binário com o programa trimodel do pacote de processamento 
+sísmico Seimic Unix (SU) a partir dos arquivos .itf gerados por este programa.
 
 .SH RESUMO
 .B interfaceBuilder
@@ -13,7 +13,8 @@ gerados por este programa.
 .SH DESCRIÇÃO
 .PP
 INTERFACEBUILDER é um auxiliar para gerar modelos de refletores em subsuperfície
-lidos pelo programa triseis do pacote de processamento sísmico Seismic Unix (SU).
+lidos pelo programa trimodel do pacote de processamento sísmico Seismic Unix (SU)
+chamado através do programa geomodel.
 
 .SH OPÇÕES
 INTERFACEBUILDER aceita as seguintes opções:
@@ -34,8 +35,7 @@ de aquisição. Não é possível criar um modelo com o nome de arquivo que já 
 .TP 8
 .B \-a \-\-add arquivo.itf x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
 Adiciona uma nova interface ao arquivo 'arquivo.itf' definida pelos pontos
-x e y. O programa fará a iterpolação dos pontos utilizando o programa trimodel
-do Seismic Unix (SU).
+x e y.
 
 O parâmetro sfill=p1,s1 é um ponto (0,p1) em uma camada demarcada pela
 última interface no modelo e a interface que está sendo adicionada.
@@ -73,9 +73,11 @@ Remover a última interface cadastrada.
 	~$ interfaceBuilder -r modelo.itf
 
 .SH AMBIENTE
-INTERFACEBUILDER precisa do pacote Seismic Unix (SU) corretamente instalado. É
-uma interface para o programa trimodel do SU e gera os dados no formato lido por
-este programa.
+INTERFACEBUILDER é um Shell Script para gerar um modelo lido pelo programa geomodel
+em um formato de arquivo de texto com a extensão '.itf'.
+Utiliza comandos do shell bash para gerar os arquivos. Porém,
+os programas que geram modelos através destes arquivos, como o geomodel,
+precisam do pacote Seismic Unix (SU) corretamente instalado. 
 
 .SH FILES
 INTERFACEBUILDER é instalado na pasta /proSU, e precisa de permissão de execução.
