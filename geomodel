@@ -30,7 +30,7 @@ VERSAO="Versão 1.0"
 
 ## Variáveis que armazenam mensagem de ajuda do programa
 NOME_PROGRAMA="$(basename $0)"
-DESCRICAO=" Gerar modelo da subsuperfície para o programa triseis do SU.\n\t Lê as interfaces de arquivo .itf gerado pelo programa geobuilder"
+DESCRICAO=" Gerar modelo da subsuperfície para o programa triseis do SU.\n\t Ler as interfaces de arquivo .itf gerado pelo programa interfaceBuilder"
 PARAMETROS="-h --help::Exibe essa tela de ajuda e sai
 -v --version::Exibe a versão do programa e sai
 -m --model::Gerar o modelo de interfaces no fomato do trimodel
