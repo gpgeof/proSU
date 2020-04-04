@@ -8,5 +8,5 @@ services:
   - docker
 
 script:
-  - docker run dirack/ambienteprosu:1.1 bash -c "make test"
+  - docker run -t -v $PWD:/proSU dirack/ambienteprosu:1.2 bash -c 'CWPROOT=$HOME && PATH=$PATH:$CWPROOT/bin && make test'
 
