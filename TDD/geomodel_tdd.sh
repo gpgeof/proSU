@@ -26,9 +26,10 @@ DIR=".."
 # Criar novo modelo itf
 TMP=$(mktemp -u tmp_XXXX.itf)
 TMPBIN=$(echo $TMP | cut -d"." -f1)
+TMPEPS="${TMPBIN}.eps"
 TMPBIN="${TMPBIN}.bin"
 
-trap "rm $TMP $TMPBIN" err exit
+trap "rm $TMP $TMPBIN $TMPEPS" err exit
 
 # Criar modelo de testes e adicionar 7 interfaces
 $DIR/interfaceBuilder -c "$TMP" 0 12 0 3.5 
@@ -49,3 +50,7 @@ done
 $DIR/geomodel -m $TMPBIN $TMP
 
 error "$?" "0" "1" "Gerar modelo..."
+
+$DIR/geomodel -i $TMPBIN $TMP
+
+error "$?" "0" "2" "Gerar imagem eps do modelo..."
