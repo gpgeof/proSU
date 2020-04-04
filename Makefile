@@ -16,7 +16,8 @@ TESTES=interfaceBuilder
 DIR_TESTES=./TDD
 
 install:
-	@echo "Funcionalidade em desenvolvimento..."
+	@echo "Instalando o pacote de processamento sísmico Seismic Unix (SU)..."
+	./suinstall -i
 
 test:	$(TESTES:=_tdd.sh)
 
