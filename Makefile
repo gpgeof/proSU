@@ -12,16 +12,16 @@
 # 
 # Licença: GPL-3.0 <https://www.gnu.org/licenses/gpl-3.0.txt>.
 
-TESTES= interfaceBuilder
+TESTES=interfaceBuilder
 DIR_TESTES=./TDD
 
 install:
 	@echo "Funcionalidade em desenvolvimento..."
 
-test:	msg $(TESTES)
+test:	$(TESTES:=_tdd.sh)
 
 msg:
 	@echo "Testando a biblioteca proSU..."
 
-%:	$(DIR_TESTES)/%_tdd.sh
+%_tdd.sh:	$(DIR_TESTES)/%_tdd.sh
 	@echo "...Testando $@" && $<
