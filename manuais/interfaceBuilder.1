@@ -1,0 +1,121 @@
+.TH INTERFACEBUILDER 1 "03 ABR 2020" "Versão 1.0" "INTERFACEBUILDER Manual de uso"
+
+.SH NOME
+interfaceBuilder - Gerar arquivo ITF, arquivo de interfaces lido pelo programa geomodel.
+Geomodel cria o modelo em um formato binário com o programa trimodel do pacote de processamento 
+sísmico Seimic Unix (SU) a partir dos arquivos .itf gerados por este programa.
+
+.SH RESUMO
+.B interfaceBuilder
+[\-h] [\-\-help] [-v] [\-\-version] [\-c] [\-\-create] [\-a] [\-\-add]
+[\-s] [\-\-see] [\-r] [\-\-remove]
+
+.SH DESCRIÇÃO
+.PP
+INTERFACEBUILDER é um auxiliar para gerar modelos de refletores em subsuperfície
+lidos pelo programa trimodel do pacote de processamento sísmico Seismic Unix (SU)
+chamado através do programa geomodel.
+
+.SH OPÇÕES
+INTERFACEBUILDER aceita as seguintes opções:
+.TP 8
+.B  \-h, \-\-help
+Exibe a mensagem de ajuda do programa e sai.
+.TP 8
+.B \-v, \-\-version
+Exibe a versão do programa.
+.TP 8
+.B \-c \-\-create arquivo.itf <xmin> <xmax> <zmin> <zmax>
+Esta opção cria um novo modelo 2D e armazena no arquivo 'arquivo.itf'.
+Este modelo terá as dimensões do eixo x dadas por
+xmin e xmax, e as dimensões do eixo z dadas por zmin e zmax.
+O modelo é inicializado com uma única interface que corresponde à superfície
+de aquisição. Não é possível criar um modelo com o nome de arquivo que já existe.
+
+.TP 8
+.B \-a \-\-add arquivo.itf x=x1,x2,x3...xn y=y1,y2,y3...yn sfill=p1,s1
+Adiciona uma nova interface ao arquivo 'arquivo.itf' definida pelos pontos
+x e y.
+
+O parâmetro sfill=p1,s1 é um ponto (0,p1) em uma camada demarcada pela
+última interface no modelo e a interface que está sendo adicionada.
+O parâmetro s1 é a vagarosidade ao quadrado (slooth) da camada.
+
+.TP 8
+.B \-s \-\-see arquivo.itf
+Exibe informações sobre as interfaces do modelo definido no arquivo 'arquivo.itf'.
+
+.TP 8
+.B \-r \-\-remove arquivo.itf
+Remove a última interface cadastrada no modelo definido no arquivo 'arquivo.itf'.
+Não é permitido remover a primeira interface do modelo. Ou seja, o modelo terá no
+mínimo uma interface, gerada durante a sua criação.
+	
+.SH EXEMPLOS DE USO
+.PP
+Gerar um modelo de exemplo, com dimensões xmin=0 xmax=12 zmin=0 zmax=3.5.
+
+	~$ interfaceBuilder -c modelo.itf 0 12 0 3.5
+
+.PP
+Adicionar uma interface ao modelo gerado.
+
+	~$ interfaceBuilder -a modelo.itf x=0,12 y=0.7,0.45 sfill=1,0.39
+
+.PP
+Ver as interfaces cadastradas no modelo.
+
+	~$ interfaceBuilder -s modelo.itf
+
+.PP
+Remover a última interface cadastrada.
+
+	~$ interfaceBuilder -r modelo.itf
+
+.SH AMBIENTE
+INTERFACEBUILDER é um Shell Script para gerar um modelo lido pelo programa geomodel
+em um formato de arquivo de texto com a extensão '.itf'.
+Utiliza comandos do shell bash para gerar os arquivos. Porém,
+os programas que geram modelos através destes arquivos, como o geomodel,
+precisam do pacote Seismic Unix (SU) corretamente instalado. 
+
+.SH ARQUIVOS
+INTERFACEBUILDER é instalado na pasta /proSU, e precisa de permissão de execução.
+Outros usuários podem preferir instalar o programa no seu diretório de preferência, o que
+não afetará a sua usabilidade, desde que este diretório esteja definido na sua $PATH.
+
+.SH SUGESTÕES E 'BUG REPORTS'
+Qualquer bug encontrado deve ser reportado para o repositório do
+Github desta Biblioteca na aba 'issues' em:
+
+	https://github.com/Dirack/proSU/issues
+
+E deve-se notificar por email os responsáveis pela manutenção do código:
+
+	rodolfo_profissional@hotmail.com (Rodolfo Dirack).
+
+	murilovj@gmail.com (Murilo Santiago).
+
+Quando reportar um bug é importante explicitar em que situação este foi produzido
+para que possa ser reproduzido pelo autor, a versão do programa e toda informação
+relevante será bem vinda.
+
+.SH AUTORES
+Rodolfo A. C. Neves (Dirack), Murilo Santiago e o Grupo de Programação Aplicada à Geofísica (GPGEOF).
+
+Contato:
+
+-Página no github (Dirack) https://github.com/Dirack
+
+-Página no github(Sanmurilo) https://github.com/sanmurilo
+
+-Página no github (GPGEOF) https://github.com/gpgeof.
+
+.SH VEJA TAMBÉM
+Visite o nosso canal de divulgação científica no Youtube (Geofisicando) em:
+
+	https://www.youtube.com/channel/UCi5XD5PCQtPrIRD0H_GJvag
+
+Site oficial do pacote SU:
+	
+	https://cwp.mines.edu/

@@ -1,15 +1,17 @@
 # Processamento Sísmico no Seismic Unix (SU)
 >Fluxo de processamento sísmico no SU, scripts e relatório de processamento
 
+[![Build Status](https://travis-ci.org/Dirack/proSU.svg?branch=master)](https://travis-ci.org/Dirack/proSU)
+
 [Programas e relatório desenvolvidos originalmente por Murilo Santiago](https://github.com/sanmurilo)
 
-![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/relatorio_original/figuras/cap2/campovel_suavizado.png)
+![Campo de velocidades suavizado](https://github.com/Dirack/ProcessamentoSismicoSU/blob/master/campovel_suavizado.png)
 
 Este repositório é uma biblioteca de scripts para o pacote de processamento sísmico Seismic Unix (SU) em 
 linguagem Shell Script. Funciona como uma interface de linha de comandos para a utilização dos programas do pacote
  de processamento, chamados dentro dos scripts.
 
-Este repositório possui, além da documentação, um [relatório](https://github.com/Dirack/proSU/blob/master/relatorio_original/relatorio_PS.pdf) detalhando as etapas do processamento sísmico desenvolvidas nos scripts, servindo de referência teórica. Ambos, scripts e relatório, podem ser utilizados como guias para um minicurso de introdução ao processamento sísmico.
+Este repositório possui, além da documentação, um [relatório](https://github.com/Dirack/relatorio-original-proSU.git) detalhando as etapas do processamento sísmico desenvolvidas nos scripts, servindo de referência teórica. Ambos, scripts e relatório, podem ser utilizados como guias para um minicurso de introdução ao processamento sísmico.
 
 [Para mais informações visite o nosso wiki!](https://github.com/Dirack/ProcessamentoSismicoSU/wiki)
 

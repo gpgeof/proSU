@@ -1,0 +1,94 @@
+.TH GEOMODEL 1 "03 ABR 2020" "Versão 1.0" "GEOMODEL Manual de uso"
+
+.SH NOME
+geomodel - Gerar modelos em formato binário do Seismic Unix (SU) a partir de arquivos de interfaces .itf gerados pelo programa interfaceBuilder.
+Geomodel também permite criar imagens eps a partir dos modelos.
+
+.SH RESUMO
+.B geomodel
+[\-h] [\-\-help] [-v] [\-\-version] [\-m] [\-\-model] [\-i] [\-\-image]
+
+.SH DESCRIÇÃO
+.PP
+GEOMODEL é um auxiliar para gerar modelos de refletores em subsuperfície para o pacote de processamento sísmico Seismic Unix (SU).
+Estes modelos da subsuperfície podem ser utilizados para modelagem direta com o programa triseis do SU.
+
+.SH OPÇÕES
+GEOMODEL aceita as seguintes opções:
+.TP 8
+.B  \-h, \-\-help
+Exibe a mensagem de ajuda do programa e sai.
+.TP 8
+.B \-v, \-\-version
+Exibe a versão do programa.
+.TP 8
+.B \-m \-\-model modelo.bin modelo.itf
+Esta opção cria um modelo 2D em um arquivo binário 'modelo.bin'
+a partir das interfaces descritas no arquivo 'modelo.itf'.
+Este modelo poderá ser utilizado pelo programa triseis do SU
+para a realização de modelagem direta.
+
+.TP 8
+.B \-i \-\-image modelo.bin modelo.itf
+Cria uma imagem eps de 'modelo.bin' e armazena em 'modelo.eps'.
+Os parâmetros da imagem, legenda e etc, são definidos no arquivo 'modelo.itf'
+na seção identificada pelas tags '<sp>' e '</sp>'.
+
+.SH EXEMPLOS DE USO
+.PP
+Gerar 'modelo.bin' a partir das interfaces definidas em 'modelo.itf'.
+
+	~$ geomodel -m modelo.bin modelo.itf
+
+.PP
+Gerar uma imagem eps de 'modelo.bin' com os parâmetros de plotagem
+definidos em 'modelo.itf'. A imagem será gerada com nome de arquivo 'modelo.eps'.
+
+	~$ geomodel -i modelo.bin modelo.itf
+
+.SH AMBIENTE
+GEOMODEL é um Shell Script para gerar um modelo em arquivo binário
+lido pelo programa triseis do pacote SU.
+Precisa do pacote Seismic Unix (SU) corretamente instalado e configurado
+para funcionar. 
+
+.SH ARQUIVOS
+GEOMODEL é instalado na pasta /proSU, e precisa de permissão de execução.
+Outros usuários podem preferir instalar o programa no seu diretório de preferência, o que
+não afetará a sua usabilidade, desde que este diretório esteja definido na sua $PATH.
+
+.SH SUGESTÕES E 'BUG REPORTS'
+Qualquer bug encontrado deve ser reportado para o repositório do
+Github desta Biblioteca na aba 'issues' em:
+
+	https://github.com/Dirack/proSU/issues
+
+E deve-se notificar por email os responsáveis pela manutenção do código:
+
+	rodolfo_profissional@hotmail.com (Rodolfo Dirack).
+
+	murilovj@gmail.com (Murilo Santiago).
+
+Quando reportar um bug é importante explicitar em que situação este foi produzido
+para que possa ser reproduzido pelo autor, a versão do programa e toda informação
+relevante será bem vinda.
+
+.SH AUTORES
+Rodolfo A. C. Neves (Dirack), Murilo Santiago e o Grupo de Programação Aplicada à Geofísica (GPGEOF).
+
+Contato:
+
+-Página no github (Dirack) https://github.com/Dirack
+
+-Página no github(Sanmurilo) https://github.com/sanmurilo
+
+-Página no github (GPGEOF) https://github.com/gpgeof.
+
+.SH VEJA TAMBÉM
+Visite o nosso canal de divulgação científica no Youtube (Geofisicando) em:
+
+	https://www.youtube.com/channel/UCi5XD5PCQtPrIRD0H_GJvag
+
+Site oficial do pacote SU:
+	
+	https://cwp.mines.edu/
