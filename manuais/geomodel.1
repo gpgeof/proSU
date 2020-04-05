@@ -1,20 +1,17 @@
 .TH GEOMODEL 1 "03 ABR 2020" "Versão 1.0" "GEOMODEL Manual de uso"
 
 .SH NOME
-geomodel - Baixar e formatar arquivo SConstruct do site oficial do Madagascar.
-Listar todos os papers da aba 'Reproducible Documents' e seus respectivos SConstruct's.
+geomodel - Gerar modelos em formato binário do Seismic Unix (SU) a partir de arquivos de interfaces .itf gerados pelo programa interfaceBuilder.
+Geomodel também permite criar imagens eps a partir dos modelos.
 
 .SH RESUMO
 .B geomodel
-[\-h] [\-\-help] [-v] [\-\-version] [\-l]
+[\-h] [\-\-help] [-v] [\-\-version] [\-m] [\-\-model] [\-i] [\-\-image]
 
 .SH DESCRIÇÃO
 .PP
-GEOMODEL é um auxiliar de pesquisa de papers no site oficial do MADAGASCAR
-buscando um determinado assunto nas descrições disponíveis no site.
-Ao utilizar este programa você pode baixar diretamente um SConstruct já formatado,
-através do terminal, fornecendo ao programa um link de uma página do site do MADAGASCAR 
-que contenha algum SConstruct.
+GEOMODEL é um auxiliar para gerar modelos de refletores em subsuperfície para o pacote de processamento sísmico Seismic Unix (SU).
+Estes modelos da subsuperfície podem ser utilizados para modelagem direta com o programa triseis do SU.
 
 .SH OPÇÕES
 GEOMODEL aceita as seguintes opções:
@@ -25,49 +22,65 @@ Exibe a mensagem de ajuda do programa e sai.
 .B \-v, \-\-version
 Exibe a versão do programa.
 .TP 8
-.B \-l <link>
-Baixa o SConstruct da página <link> para a pasta atual.
-Este SConstruct já terá o nome e formato padrão de Script
-do MADAGASCAR.
+.B \-m \-\-model modelo.bin modelo.itf
+Esta opção cria um modelo 2D em um arquivo binário 'modelo.bin'
+a partir das interfaces descritas no arquivo 'modelo.itf'.
+Este modelo poderá ser utilizado pelo programa triseis do SU
+para a realização de modelagem direta.
+
+.TP 8
+.B \-i \-\-image modelo.bin modelo.itf
+Cria uma imagem eps de 'modelo.bin' e armazena em 'modelo.eps'.
+Os parâmetros da imagem, legenda e etc, são definidos no arquivo 'modelo.itf'
+na seção identificada pelas tags '<sp>' e '</sp>'.
 
 .SH EXEMPLOS DE USO
 .PP
-Baixar o SConstruct da página <link> para a pasta atual.
+Gerar 'modelo.bin' a partir das interfaces definidas em 'modelo.itf'.
 
-	~$ geomodel -l <link>
+	~$ geomodel -m modelo.bin modelo.itf
+
+.PP
+Gerar uma imagem eps de 'modelo.bin' com os parâmetros de plotagem
+definidos em 'modelo.itf'. A imagem será gerada com nome de arquivo 'modelo.eps'.
+
+	~$ geomodel -i modelo.bin modelo.itf
 
 .SH AMBIENTE
-GEOMODEL armazena uma lista com os links para os papers disponíveis no site do 
-MADAGASCAR em /tmp/linksScons.txt e utiliza esta listagem para procurar pelos
-assuntos dos papers. Ao pesquisar um paper específico, o programa procura no
-site do MADAGASCAR por todos os scripts SConstruct's associados com aquele
-paper e exibe a lista ao usuário.
+GEOMODEL é um Shell Script para gerar um modelo em arquivo binário
+lido pelo programa triseis do pacote SU.
+Precisa do pacote Seismic Unix (SU) corretamente instalado e configurado
+para funcionar. 
 
-.SH FILES
-GEOMODEL é instalado na pasta /shellinclude, e precisa de permissão de execução.
+.SH ARQUIVOS
+GEOMODEL é instalado na pasta /proSU, e precisa de permissão de execução.
 Outros usuários podem preferir instalar o programa no seu diretório de preferência, o que
 não afetará a sua usabilidade, desde que este diretório esteja definido na sua $PATH.
 
 .SH SUGESTÕES E 'BUG REPORTS'
 Qualquer bug encontrado deve ser reportado para o repositório do
-Github da Biblioteca Shell Script na aba 'issues' em:
+Github desta Biblioteca na aba 'issues' em:
 
-	https://github.com/Dirack/Shell-Script/issues
+	https://github.com/Dirack/proSU/issues
 
-E deve-se notificar por email o responsável pela manutenção do código:
+E deve-se notificar por email os responsáveis pela manutenção do código:
 
 	rodolfo_profissional@hotmail.com (Rodolfo Dirack).
+
+	murilovj@gmail.com (Murilo Santiago).
 
 Quando reportar um bug é importante explicitar em que situação este foi produzido
 para que possa ser reproduzido pelo autor, a versão do programa e toda informação
 relevante será bem vinda.
 
 .SH AUTORES
-Rodolfo A. C. Neves (Dirack), e o Grupo de Programação Aplicada à Geofísica (GPGEOF).
+Rodolfo A. C. Neves (Dirack), Murilo Santiago e o Grupo de Programação Aplicada à Geofísica (GPGEOF).
 
 Contato:
 
 -Página no github (Dirack) https://github.com/Dirack
+
+-Página no github(Sanmurilo) https://github.com/sanmurilo
 
 -Página no github (GPGEOF) https://github.com/gpgeof.
 
@@ -76,6 +89,6 @@ Visite o nosso canal de divulgação científica no Youtube (Geofisicando) em:
 
 	https://www.youtube.com/channel/UCi5XD5PCQtPrIRD0H_GJvag
 
-Site oficial do MADAGASCAR:
-
-	http://www.ahay.org/wiki/Main_Page
+Site oficial do pacote SU:
+	
+	https://cwp.mines.edu/
