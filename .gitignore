@@ -9,5 +9,6 @@
 *.bin
 *.eps
 *.itf
+!/su_test_models/*.itf
 *.eps
 *.bin
