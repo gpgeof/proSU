@@ -49,16 +49,73 @@ header* initHeader(
 	return h;
 }
 
-void initInterface(){}
+void printHeader(header* h){
 
-int main(void){
-	header* h;
-	h = initHeader(1,0,12,0,3.5);
 	printf("kedge=%d\nxmin=%f\nxmax=%f\nzmin=%f\nzmax=%f\n",
 		h->kedge,
 		h->xmin,
 		h->xmax,
 		h->zmin,
 		h->zmax);
+}
 
+interface* initInterface(float* xedge, float* zedge, float* sfill)
+{
+	interface* i;
+	i = (interface*) malloc(sizeof(interface));
+	i->xedge=xedge;
+	i->zedge=zedge;
+	i->sfill[0]=sfill[0];
+	i->sfill[1]=sfill[1];
+	i->sfill[2]=sfill[2];
+	return i;
+}
+
+void printInterface(interface* i){
+
+	int tam = (int) (sizeof(i->xedge)/sizeof(i->xedge[0]));
+	int j;
+
+	/* Print xedge */
+	printf("xedge=");
+	for(j=0;j<tam-1;j++){
+		printf("%.2f,",i->xedge[j]);
+	}
+
+	j++;
+	printf("%.2f\n",i->xedge[j]);
+
+	/* Print zedge */
+	printf("zedge=");
+	for(j=0;j<tam-1;j++){
+		printf("%.2f,",i->zedge[j]);
+	}
+
+	j++;
+	printf("%.2f\n",i->zedge[j]);
+
+	/* Print sedge */
+	printf("sedge=");
+	for(j=0;j<tam-1;j++){
+		printf("0,");
+	}
+
+	j++;
+	printf("0\n");
+
+}
+
+int main(void){
+
+	header* h;
+	interface* i;
+	float x[2]={0,12};
+	float z[2]={1,1.5};
+	float s[3]={0.5,0.5,0.6};
+
+	h = initHeader(1,0,12,0,3.5);
+	printHeader(h);
+
+	i = initInterface(x,z,s);
+	printInterface(i);
 }
