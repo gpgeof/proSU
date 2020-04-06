@@ -17,57 +17,56 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void error(size_t nerror,const char* msg){
-	fprintf(stderr,"%s: ERRO(%ld): %s\n",__FILE__,nerror,msg);
-	exit(nerror);
-}
-
-struct Header{
-	float xmin;
-	float xmax;
-	float zmin;
-	float zmax;
-};
-
-typedef struct Header *header;
+#include "estruturaModeloItf.h"
+#include "tabelaParametros.h"
 
 int main(int argc, char* argv[]){
 
 	FILE *fp;
-	char ch[50];
 	int i;
-	header h = (header) malloc(sizeof(*h));
-	char* eq;
-	float v[4];
+	char* valor;
+	char* chave;
+	char* value;
+	size_t keylen;
+	size_t valen;
+	char ch[50];
+	tabela tab;
+	init(&tab);
 
-	if(argv[1]==NULL)
-		error(1,"O usuário não passou nenhum arquivo!");
-
-	if((fp=fopen(argv[1],"r"))==NULL)
-		error(2,"Não foi possível abrir o arquivo passado!");
-
-	while(strstr(ch,"<tm>")==NULL)
-		fscanf(fp,"%s\n",ch);
-
-	for(i=0;i<4;i++){
-		fscanf(fp,"%s\n",ch);
-		eq = strchr(ch,'=');
-		if(eq==NULL)
-			continue;
-		eq++;
-		v[i]=strtof(eq,NULL);
+	/* Abrir arquivo itf */
+	if(argv[1]==NULL){
+		fprintf(stderr,"O usuário não passou nenhum arquivo!\n");
+		exit(1);
 	}
 
-	h->xmin=v[0];
-	h->xmax=v[1];
-	h->zmin=v[2];
-	h->zmax=v[3];
-	printf("xmin=%f\nxmax=%f\nzmin=%f\nzmax=%f\n",
-		h->xmin,
-		h->xmax,
-		h->zmin,
-		h->zmax);
+	if((fp=fopen(argv[1],"r"))==NULL){
+		fprintf(stderr,"Não foi possível abrir o arquivo passado!\n");
+		exit(2);
+	}
+
+	/* Ler até a tag de marcação <tm> */
+	while(strstr(ch,"<tm>")==NULL)
+		fscanf(fp,"%s\n",ch);
+	
+	/* Começa a ler os parâmetros chave=valor */
+	while(strstr(ch,"</tm>")==NULL){
+		fscanf(fp,"%s\n",ch);
+		valor = strchr(ch,'=');
+		if(valor==NULL)
+			continue;
+		valor++;
+		value = (char*) malloc(strlen(valor)*sizeof(char));
+		value = strcpy(value,valor);
+		keylen = (size_t) (valor-ch);
+		chave = (char*) malloc(keylen*sizeof(char));
+		memcpy(chave,ch,keylen);
+		chave[keylen-1]='\0';
+		push(&tab,chave,value);
+	}
+
+	print(tab);
+
+	printf("zmax=%s\n",getvalue(tab,"zmax"));
 
 	fclose(fp);
 }

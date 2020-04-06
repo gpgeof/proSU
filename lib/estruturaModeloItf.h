@@ -1,5 +1,5 @@
 /*
-* estruturaModeloItf.c (C)
+* estruturaModeloItf.h (C)
 * 
 * Objetivo: Define a estrutura de dados do modelo itf.
 * 
@@ -103,19 +103,4 @@ void printInterface(interface* i){
 	j++;
 	printf("0\n");
 
-}
-
-int main(void){
-
-	header* h;
-	interface* i;
-	float x[2]={0,12};
-	float z[2]={1,1.5};
-	float s[3]={0.5,0.5,0.6};
-
-	h = initHeader(1,0,12,0,3.5);
-	printHeader(h);
-
-	i = initInterface(x,z,s);
-	printInterface(i);
 }

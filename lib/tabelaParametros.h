@@ -63,20 +63,3 @@ char* getvalue(tabela t,char* chave){
 	if(isempty(t)) return NULL;
 	getvalue(t->prox,chave);
 }
-
-int main(void){
-	tabela tab;
-	init(&tab);
-	push(&tab,"k1","val1");
-	push(&tab,"k2","val2");
-	printf("%s\n",getvalue(tab,"k1"));
-}
-
-
-
-
-
-
-
-
-
