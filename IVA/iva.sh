@@ -45,7 +45,8 @@ do
 #------------------------------------------------
 # Definicao de variaveis:
 #------------------------------------------------
-indata=seis_cdp_sort_noise.su
+#indata=seis_cdp_sort_noise.su
+indata=cmp_test.su
 outdata=cmp$picknow.dat
 
 nv=400     # Numero de velocidades
