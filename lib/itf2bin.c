@@ -34,10 +34,12 @@ int main(int argc, char* argv[]){
 	if((fp=fopen(argv[1],"r"))==NULL)
 		error(2,"Não foi possível abrir o arquivo passado!");
 
-	while((fscanf(fp,"%s\n",ch))!=EOF){
-		if(strstr(ch,"<tm>")!=NULL)
-			printf("achou!");
-		printf("%s",ch);
+	while(strstr(ch,"<tm>")==NULL)
+		fscanf(fp,"%s\n",ch);
+
+	while(strstr(ch,"</tm>")==NULL){
+		fscanf(fp,"%s\n",ch);
+		printf("%s\n",ch);
 	}
 
 	fclose(fp);
