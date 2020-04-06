@@ -23,10 +23,23 @@ void error(size_t nerror,const char* msg){
 	exit(nerror);
 }
 
+struct Header{
+	float xmin;
+	float xmax;
+	float zmin;
+	float zmax;
+};
+
+typedef struct Header *header;
+
 int main(int argc, char* argv[]){
 
 	FILE *fp;
 	char ch[50];
+	int i;
+	header h = (header) malloc(sizeof(*h));
+	char* eq;
+	float v[4];
 
 	if(argv[1]==NULL)
 		error(1,"O usuário não passou nenhum arquivo!");
@@ -37,10 +50,24 @@ int main(int argc, char* argv[]){
 	while(strstr(ch,"<tm>")==NULL)
 		fscanf(fp,"%s\n",ch);
 
-	while(strstr(ch,"</tm>")==NULL){
+	for(i=0;i<4;i++){
 		fscanf(fp,"%s\n",ch);
-		printf("%s\n",ch);
+		eq = strchr(ch,'=');
+		if(eq==NULL)
+			continue;
+		eq++;
+		v[i]=strtof(eq,NULL);
 	}
+
+	h->xmin=v[0];
+	h->xmax=v[1];
+	h->zmin=v[2];
+	h->zmax=v[3];
+	printf("xmin=%f\nxmax=%f\nzmin=%f\nzmax=%f\n",
+		h->xmin,
+		h->xmax,
+		h->zmin,
+		h->zmax);
 
 	fclose(fp);
 }
