@@ -63,3 +63,11 @@ char* getvalue(tabela t,char* chave){
 	if(isempty(t)) return NULL;
 	getvalue(t->prox,chave);
 }
+
+void print(tabela t){
+	if(isempty(t)){
+		return;
+	}
+	printf("Chave=%s valor=%s\n",t->chave,t->valor);
+	print(t->prox);
+}

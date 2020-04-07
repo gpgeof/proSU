@@ -35,7 +35,7 @@ struct Header{
 	float zmax;
 };
 
-int main(void){
+int main(int argc, char* argv[]){
 
 	interface itf1[1], itf2[1];
 	header h1, h2;
@@ -43,7 +43,13 @@ int main(void){
 	int n;
 	float valor;
 
-	/* Inicializar o modelo */
+
+	h2 = (header) malloc(sizeof(*h2));
+	itf2[0]=(interface) malloc(sizeof(*itf2));
+	itf2[0]->xedge=(float*) malloc(2*sizeof(float));
+	itf2[0]->zedge=(float*) malloc(2*sizeof(float));
+	//itf2[0]->sfill=(float*) malloc(3*sizeof(float));
+	/* Inicializar o modelo
 	h1 = (header) malloc(sizeof(*h1));
 	h2 = (header) malloc(sizeof(*h2));
 	h1->kedge=1;
@@ -63,7 +69,7 @@ int main(void){
 	itf1[0]->sfill[1]=0.5;
 	itf1[0]->sfill[1]=0.6;
 
-	/* Abrir arquivo */
+	Abrir arquivo
 	if((fp=fopen("interface.itfb","wb"))==NULL){
 		fprintf(stderr,"Erro ao tentar abrir arquivo!\n");
 		exit(1);
@@ -71,10 +77,10 @@ int main(void){
 
 	n = fwrite(h1,sizeof(*h1),1,fp);
 	n = fwrite(itf1,sizeof(*itf1),1,fp);
-	fclose(fp);
+	fclose(fp);*/
 
 	/* Ler de arquivo binário */
-	if((fp=fopen("interface.itfb","rb"))==NULL){
+	if((fp=fopen(argv[1],"rb"))==NULL){
 		fprintf(stderr,"Não foi possível ler o arquivo!\n");
 		exit(2);
 	}

@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
 
 	FILE *fp;
 	int i;
+	int n;
 	char* valor;
 	char* chave;
 	char* value;
@@ -32,10 +33,16 @@ int main(int argc, char* argv[]){
 	char ch[50];
 	tabela tab;
 	init(&tab);
+	header* h;
+	interface* itf;
+	/* Vetores de teste da interface */
+	float x[2]={0,12};
+	float z[2]={1,1.4};
+	float s[3]={0.5,0.5,0.6};
 
 	/* Abrir arquivo itf */
-	if(argv[1]==NULL){
-		fprintf(stderr,"O usuário não passou nenhum arquivo!\n");
+	if(argv[1]==NULL || argv[2]==NULL){
+		fprintf(stderr,"O usuário não passou o arquivo itf e/ou um nome para o arquivo bin!\n");
 		exit(1);
 	}
 
@@ -67,6 +74,29 @@ int main(int argc, char* argv[]){
 	print(tab);
 
 	printf("zmax=%s\n",getvalue(tab,"zmax"));
+
+	fclose(fp);
+
+	/* Escrever binário */
+	if((fp=fopen(argv[2],"wb"))==NULL){
+		fprintf(stderr,"Não foi possível abrir o arquivo passado!\n");
+		exit(3);
+	}
+
+	h = initHeader(atoi(getvalue(tab,"kedge")),
+		strtof(getvalue(tab,"xmin"),NULL),
+		strtof(getvalue(tab,"xmax"),NULL),
+		strtof(getvalue(tab,"zmin"),NULL),
+		strtof(getvalue(tab,"zmax"),NULL));
+
+	/* TODO este vetor é apenas de teste
+	não foi lido a vartir do arquivo itf
+	o header sim, foi lido e carrgado acima */
+	itf = initInterface(x,z,s);
+
+	/* Escrever o header no binário */
+	n = fwrite(h,sizeof(*h),1,fp);
+	n = fwrite(itf,sizeof(*itf),1,fp);
 
 	fclose(fp);
 }
