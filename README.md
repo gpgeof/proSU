@@ -3,19 +3,13 @@
 
  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Build Status](https://travis-ci.org/Dirack/proSU.svg?branch=master)](https://travis-ci.org/Dirack/proSU)
 
-[Baseada nos scripts desenvolvidos por Murilo Santiago para a disciplina introdução ao Processamento Sísmico](https://github.com/sanmurilo)
-
 <img src="https://user-images.githubusercontent.com/30205197/78612633-31627e80-7840-11ea-8813-785ef1ed92bf.jpg" width="450">
 
 Este repositório é uma biblioteca de scripts para o pacote de processamento sísmico Seismic Unix (SU) em 
 linguagem Shell Script. Funciona como uma interface de linha de comandos para a utilização dos programas do pacote
 de processamento, chamados dentro dos scripts.
-
-Este repositório possui além da documentação, testes e exemplos de uso, um [relatório guia](https://github.com/Dirack/relatorio-original-proSU.git)
+Este repositório possui, além da documentação, testes e exemplos de uso
 detalhando as etapas do processamento sísmico desenvolvidas nos scripts e referência teórica.
-Os scripts e o relatório, foram desenvolvido por um dos autores (Murilo Santiago) 
-ao cursar a disciplina de introdução ao processamento sísmico,
-durante o seu mestrado em geofísica na Universida Federal do Pará (UFPA).
 
 [Para mais informações visite o nosso wiki!](https://github.com/Dirack/proSU/wiki)
 
